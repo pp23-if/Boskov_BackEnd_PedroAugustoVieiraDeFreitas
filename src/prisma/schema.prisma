@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model avaliacao {
+  id_usuario Int
+  id_filme   Int
+  nota       Int
+  coment_rio String  @map("comentário") @db.Text
+  filme      filme   @relation(fields: [id_filme], references: [id], onDelete: NoAction, map: "fk_filme_avaliacao")
+  usuario    usuario @relation(fields: [id_usuario], references: [id], onDelete: NoAction, map: "fk_usuario_avaliacao")
+
+  @@id([id_usuario, id_filme])
+  @@index([id_filme], map: "fk_filme_avaliacao")
+}
+
+model filme {
+  id             Int            @id @default(autoincrement())
+  nome           String         @db.VarChar(300)
+  diretor        String         @db.VarChar(255)
+  ano_lancamento DateTime       @db.Date
+  duracao        Int
+  produtora      String         @db.VarChar(255)
+  classificacao  String         @db.VarChar(50)
+  poster         String         @db.Text
+  avaliacao      avaliacao[]
+  genero_filme   genero_filme[]
+}
+
+model genero {
+  id           Int            @id @default(autoincrement())
+  descricao    String         @db.VarChar(255)
+  genero_filme genero_filme[]
+}
+
+model genero_filme {
+  id_genero Int
+  id_filme  Int
+  filme     filme  @relation(fields: [id_filme], references: [id], onDelete: NoAction, map: "fk_filme")
+  genero    genero @relation(fields: [id_genero], references: [id], onDelete: NoAction, map: "fk_genero")
+
+  @@id([id_genero, id_filme])
+  @@index([id_filme], map: "fk_filme")
+}
+
+model token {
+  id         Int     @id @default(autoincrement())
+  usuario_id Int
+  token      String  @db.VarChar(1024)
+  usuario    usuario @relation(fields: [usuario_id], references: [id], onDelete: NoAction, map: "fk_usuario")
+
+  @@index([usuario_id], map: "fk_usuario")
+}
+
+model usuario {
+  id               Int                  @id @default(autoincrement())
+  nome             String               @db.VarChar(255)
+  senha            String               @db.VarChar(1024)
+  email            String               @db.VarChar(255)
+  status           Boolean              @default(true)
+  apelido          String               @db.VarChar(255)
+  data_nascimento  DateTime             @db.Date
+  data_criacao     DateTime             @db.DateTime(0)
+  data_atualizacao DateTime             @db.DateTime(0)
+  tipo_usuario     usuario_tipo_usuario
+  avaliacao        avaliacao[]
+  token            token[]
+}
+
+enum usuario_tipo_usuario {
+  cliente
+  admin
+}
