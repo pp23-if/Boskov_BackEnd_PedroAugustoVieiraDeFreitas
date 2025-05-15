@@ -61,7 +61,7 @@ model usuario {
   id               Int                  @id @default(autoincrement())
   nome             String               @db.VarChar(255)
   senha            String               @db.VarChar(1024)
-  email            String               @db.VarChar(255)
+  email            String               @unique(map: "email") @db.VarChar(255)
   status           Boolean              @default(true)
   apelido          String               @db.VarChar(255)
   data_nascimento  DateTime             @db.Date

@@ -63,6 +63,7 @@ CREATE TABLE `usuario` (
     `data_atualizacao` DATETIME(0) NOT NULL,
     `tipo_usuario` ENUM('cliente', 'admin') NOT NULL,
 
+    UNIQUE INDEX `email`(`email`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
