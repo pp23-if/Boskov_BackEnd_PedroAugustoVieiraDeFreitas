@@ -2,7 +2,6 @@ const prisma = require("../prisma/prismaClient");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-// Cadastrar um usuário com transação
 const cadastro = async (req, res) => {
   const { nome, email, senha, apelido, data_nascimento, tipo_usuario } = req.body;
 
@@ -57,7 +56,9 @@ const cadastro = async (req, res) => {
 // Buscar todos os usuários (com atributos limitados)
 const buscaUsuarios = async (req, res) => {
   try {
-    const filtro = req.usuario?.tipo === "cliente" ? { status: true } : {};
+    const filtro = {
+      ...(req.usuario?.tipo_usuario === "cliente" && { status: true }),
+    };
 
     const usuarios = await prisma.usuario.findMany({
       where: filtro,
@@ -68,6 +69,9 @@ const buscaUsuarios = async (req, res) => {
         apelido: true,
         data_nascimento: true,
         tipo_usuario: true,
+        data_criacao: true,
+        data_atualizacao: true,
+        status: true,
       },
     });
 
@@ -78,6 +82,7 @@ const buscaUsuarios = async (req, res) => {
   }
 };
 
+
 // Buscar usuário por ID (com atributos limitados)
 const buscaId = async (req, res) => {
   const { id } = req.params;
@@ -85,7 +90,7 @@ const buscaId = async (req, res) => {
   try {
     const filtro = {
       id: Number(id),
-      ...(req.usuario?.tipo === "cliente" && { status: true }),
+      ...(req.usuario?.tipo_usuario === "cliente" && { status: true }),
     };
 
     const usuario = await prisma.usuario.findFirst({
@@ -97,6 +102,9 @@ const buscaId = async (req, res) => {
         apelido: true,
         data_nascimento: true,
         tipo_usuario: true,
+        data_criacao: true,
+        data_atualizacao: true,
+        status: true,
       },
     });
 
@@ -112,6 +120,7 @@ const buscaId = async (req, res) => {
 };
 
 
+
 const buscaNome = async (req, res) => {
   const { nome } = req.query;
 
@@ -121,8 +130,10 @@ const buscaNome = async (req, res) => {
 
   try {
     const filtro = {
-      nome: { contains: nome, mode: 'insensitive' },
-      ...(req.usuario?.tipo === "cliente" && { status: true }),
+      nome: {
+        contains: nome,
+      },
+      ...(req.usuario?.tipo_usuario === "cliente" && { status: true }),
     };
 
     const usuarios = await prisma.usuario.findMany({
@@ -134,6 +145,9 @@ const buscaNome = async (req, res) => {
         apelido: true,
         data_nascimento: true,
         tipo_usuario: true,
+        data_criacao: true,
+        data_atualizacao: true,
+        status: true,
       },
     });
 
@@ -142,6 +156,7 @@ const buscaNome = async (req, res) => {
     res.status(500).json({ error: "Erro ao buscar por nome", message: error.message });
   }
 };
+
 
 // Buscar por email
 const buscaEmail = async (req, res) => {
@@ -153,8 +168,10 @@ const buscaEmail = async (req, res) => {
 
   try {
     const filtro = {
-      email,
-      ...(req.usuario?.tipo === "cliente" && { status: true }),
+      email: {
+        equals: email,
+      },
+      ...(req.usuario?.tipo_usuario === "cliente" && { status: true }),
     };
 
     const usuario = await prisma.usuario.findFirst({
@@ -166,6 +183,9 @@ const buscaEmail = async (req, res) => {
         apelido: true,
         data_nascimento: true,
         tipo_usuario: true,
+        data_criacao: true,
+        data_atualizacao: true,
+        status: true,
       },
     });
 
@@ -179,6 +199,7 @@ const buscaEmail = async (req, res) => {
   }
 };
 
+
 // Buscar por apelido
 const buscaApelido = async (req, res) => {
   const { apelido } = req.query;
@@ -189,8 +210,10 @@ const buscaApelido = async (req, res) => {
 
   try {
     const filtro = {
-      apelido: { contains: apelido, mode: 'insensitive' },
-      ...(req.usuario?.tipo === "cliente" && { status: true }),
+      apelido: {
+        contains: apelido,
+      },
+      ...(req.usuario?.tipo_usuario === "cliente" && { status: true }),
     };
 
     const usuarios = await prisma.usuario.findMany({
@@ -202,6 +225,9 @@ const buscaApelido = async (req, res) => {
         apelido: true,
         data_nascimento: true,
         tipo_usuario: true,
+        data_criacao: true,
+        data_atualizacao: true,
+        status: true,
       },
     });
 
@@ -210,6 +236,7 @@ const buscaApelido = async (req, res) => {
     res.status(500).json({ error: "Erro ao buscar por apelido", message: error.message });
   }
 };
+
 
 // Buscar por data de nascimento
 const buscaDataNascimento = async (req, res) => {
@@ -220,15 +247,11 @@ const buscaDataNascimento = async (req, res) => {
   }
 
   try {
-    const inicio = new Date(data + "T00:00:00.000Z");
-    const fim = new Date(data + "T23:59:59.999Z");
+    const dataFormatada = new Date(data);
 
     const filtro = {
-      data_nascimento: {
-        gte: inicio,
-        lte: fim,
-      },
-      ...(req.usuario?.tipo === "cliente" && { status: true }),
+      data_nascimento: dataFormatada,
+      ...(req.usuario?.tipo_usuario === "cliente" && { status: true }),
     };
 
     const usuarios = await prisma.usuario.findMany({
@@ -240,6 +263,9 @@ const buscaDataNascimento = async (req, res) => {
         apelido: true,
         data_nascimento: true,
         tipo_usuario: true,
+        data_criacao: true,
+        data_atualizacao: true,
+        status: true,
       },
     });
 
@@ -248,6 +274,8 @@ const buscaDataNascimento = async (req, res) => {
     res.status(500).json({ error: "Erro ao buscar por data de nascimento", message: error.message });
   }
 };
+
+
 
 // Buscar por tipo de usuário
 const buscaTipoUsuario = async (req, res) => {
@@ -259,8 +287,10 @@ const buscaTipoUsuario = async (req, res) => {
 
   try {
     const filtro = {
-      tipo_usuario: tipo,
-      ...(req.usuario?.tipo === "cliente" && { status: true }),
+      tipo_usuario: {
+        equals: tipo,
+      },
+      ...(req.usuario?.tipo_usuario === "cliente" && { status: true }),
     };
 
     const usuarios = await prisma.usuario.findMany({
@@ -272,6 +302,9 @@ const buscaTipoUsuario = async (req, res) => {
         apelido: true,
         data_nascimento: true,
         tipo_usuario: true,
+        data_criacao: true,
+        data_atualizacao: true,
+        status: true,
       },
     });
 
@@ -280,6 +313,7 @@ const buscaTipoUsuario = async (req, res) => {
     res.status(500).json({ error: "Erro ao buscar por tipo de usuário", message: error.message });
   }
 };
+
 
 // Deletar (desativar) um usuário por ID
 const delecao = async (req, res) => {
@@ -309,6 +343,32 @@ const delecao = async (req, res) => {
   }
 };
 
+const desfazerDelecao = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const usuario = await prisma.usuario.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!usuario) {
+      return res.status(404).json({ error: "Usuário não encontrado" });
+    }
+
+    await prisma.usuario.update({
+      where: { id: Number(id) },
+      data: {
+        status: true,
+        data_atualizacao: new Date(),
+      },
+    });
+
+    res.status(200).json({ message: "Usuário reativado com sucesso" });
+  } catch (error) {
+    console.error("Erro ao reativar usuário:", error);
+    res.status(500).json({ error: "Erro ao reativar usuário", message: error.message });
+  }
+};
 
 // Atualizar usuário
 const atualizacao = async (req, res) => {
@@ -345,8 +405,10 @@ const atualizacao = async (req, res) => {
         id: true,
         nome: true,
         email: true,
+        senha: true,
         apelido: true,
         data_nascimento: true,
+        data_atualizacao: new Date(),
         tipo_usuario: true,
       },
     });
@@ -369,4 +431,5 @@ module.exports = {
   buscaDataNascimento,
   buscaTipoUsuario,
   delecao,
+  desfazerDelecao,
 };
