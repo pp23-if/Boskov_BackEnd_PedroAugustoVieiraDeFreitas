@@ -11,7 +11,7 @@ model avaliacao {
   id_usuario Int
   id_filme   Int
   nota       Int
-  coment_rio String  @map("comentário") @db.Text
+  comentario String  @db.Text
   filme      filme   @relation(fields: [id_filme], references: [id], onDelete: NoAction, map: "fk_filme_avaliacao")
   usuario    usuario @relation(fields: [id_usuario], references: [id], onDelete: NoAction, map: "fk_usuario_avaliacao")
 
@@ -20,7 +20,7 @@ model avaliacao {
 }
 
 model filme {
-  id             Int            @id @default(autoincrement())
+  id             Int            @id
   nome           String         @db.VarChar(300)
   diretor        String         @db.VarChar(255)
   ano_lancamento DateTime       @db.Date
@@ -33,7 +33,7 @@ model filme {
 }
 
 model genero {
-  id           Int            @id @default(autoincrement())
+  id           Int            @id
   descricao    String         @db.VarChar(255)
   genero_filme genero_filme[]
 }

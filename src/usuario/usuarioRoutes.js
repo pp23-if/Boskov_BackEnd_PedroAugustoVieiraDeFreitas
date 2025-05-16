@@ -3,7 +3,7 @@ const router = express.Router()
 const usuarioController = require('./usuarioController')
 const autenticacao = require("../middlewares/autenticacaoController");
 
-router.post('/cadastro', autenticacao, usuarioController.cadastro);
+router.post('/cadastro', usuarioController.cadastro);
 router.patch('/:id/delecao', autenticacao, usuarioController.delecao);
 router.patch('/:id/desfazerDelecao', autenticacao, usuarioController.desfazerDelecao);
 router.put('/:id', autenticacao, usuarioController.atualizacao);

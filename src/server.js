@@ -6,6 +6,7 @@ const app = express();
 app.use(cors()); // Habilita CORS
 app.use(express.json()); // Para tratar requisições com JSON
 const routes = require('./routes/routes');
+const {importarFilmes} = require('./services/filmeService');
 const PORT = process.env.PORT || 3000;
 
 
@@ -22,6 +23,7 @@ async function checkConnection() {
 }
 
 checkConnection();
+importarFilmes();
 
 // Inicia o servidor
 app.listen(PORT, () => {

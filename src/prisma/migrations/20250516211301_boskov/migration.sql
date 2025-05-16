@@ -3,7 +3,7 @@ CREATE TABLE `avaliacao` (
     `id_usuario` INTEGER NOT NULL,
     `id_filme` INTEGER NOT NULL,
     `nota` INTEGER NOT NULL,
-    `comentário` TEXT NOT NULL,
+    `comentario` TEXT NOT NULL,
 
     INDEX `fk_filme_avaliacao`(`id_filme`),
     PRIMARY KEY (`id_usuario`, `id_filme`)
@@ -11,7 +11,7 @@ CREATE TABLE `avaliacao` (
 
 -- CreateTable
 CREATE TABLE `filme` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` INTEGER NOT NULL,
     `nome` VARCHAR(300) NOT NULL,
     `diretor` VARCHAR(255) NOT NULL,
     `ano_lancamento` DATE NOT NULL,
@@ -25,7 +25,7 @@ CREATE TABLE `filme` (
 
 -- CreateTable
 CREATE TABLE `genero` (
-    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `id` INTEGER NOT NULL,
     `descricao` VARCHAR(255) NOT NULL,
 
     PRIMARY KEY (`id`)
