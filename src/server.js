@@ -25,7 +25,6 @@ async function checkConnection() {
 checkConnection();
 importarFilmes();
 
-// Inicia o servidor
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
