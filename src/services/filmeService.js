@@ -50,7 +50,7 @@ async function importarFilmes() {
     for (const filme of filmes) {
       const { id, title, release_date, poster_path, genre_ids } = filme;
 
-      // Busca detalhes do filme (runtime)
+      // Busca detalhes do filme (runtime e overview)
       const detalhesFilme = await axios.get(`${BASE_URL}/movie/${id}`, {
         params: {
           api_key: API_KEY,
@@ -59,8 +59,8 @@ async function importarFilmes() {
       });
 
       const duracao = detalhesFilme.data.runtime || 0;
-      const produtora =
-        detalhesFilme.data.production_companies?.[0]?.name || 'Desconhecida';
+      const produtora = detalhesFilme.data.production_companies?.[0]?.name || 'Desconhecida';
+      const sinopse = detalhesFilme.data.overview || 'Sem sinopse disponível';
 
       // Busca classificação indicativa brasileira
       const releaseDates = await axios.get(`${BASE_URL}/movie/${id}/release_dates`, {
@@ -103,6 +103,7 @@ async function importarFilmes() {
         data: {
           id,
           nome: title,
+          sinopse,
           ano_lancamento: new Date(release_date),
           duracao,
           diretor,
@@ -131,4 +132,4 @@ async function importarFilmes() {
   }
 }
 
-module.exports = {importarFilmes};
+module.exports = { importarFilmes };

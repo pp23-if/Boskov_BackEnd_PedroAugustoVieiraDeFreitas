@@ -22,6 +22,7 @@ model avaliacao {
 model filme {
   id             Int            @id
   nome           String         @db.VarChar(300)
+  sinopse        String         @db.VarChar(1500)
   diretor        String         @db.VarChar(255)
   ano_lancamento DateTime       @db.Date
   duracao        Int

@@ -13,6 +13,7 @@ CREATE TABLE `avaliacao` (
 CREATE TABLE `filme` (
     `id` INTEGER NOT NULL,
     `nome` VARCHAR(300) NOT NULL,
+    `sinopse` VARCHAR(1500) NOT NULL,
     `diretor` VARCHAR(255) NOT NULL,
     `ano_lancamento` DATE NOT NULL,
     `duracao` INTEGER NOT NULL,
