@@ -384,6 +384,19 @@ const atualizacao = async (req, res) => {
       return res.status(404).json({ error: "Usuário não encontrado" });
     }
 
+    if (email && email !== usuarioExistente.email) {
+      const emailDuplicado = await prisma.usuario.findFirst({
+        where: {
+          email: email,
+          NOT: { id: Number(id) }
+        }
+      });
+
+      if (emailDuplicado) {
+        return res.status(409).json({ error: "E-mail já está em uso por outro usuário." });
+      }
+    }
+
     let dadosAtualizados = {
       data_atualizacao: new Date(),
     };
@@ -408,7 +421,7 @@ const atualizacao = async (req, res) => {
         senha: true,
         apelido: true,
         data_nascimento: true,
-        data_atualizacao: new Date(),
+        data_atualizacao: true,
         tipo_usuario: true,
       },
     });
