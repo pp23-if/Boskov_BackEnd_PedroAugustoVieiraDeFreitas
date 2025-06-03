@@ -83,6 +83,38 @@ const buscaUsuarios = async (req, res) => {
 };
 
 
+const buscaUsuariosClientes = async (req, res) => {
+  try {
+    let filtro = {};
+    if (req.usuario?.tipo_usuario === 'cliente') {
+      filtro = {
+        tipo_usuario: 'cliente',
+        status: true,
+      };
+    }
+
+    const usuarios = await prisma.usuario.findMany({
+      where: filtro,
+      select: {
+        id: true,
+        nome: true,
+        email: true,
+        apelido: true,
+        data_nascimento: true,
+        tipo_usuario: true,
+        data_criacao: true,
+        data_atualizacao: true,
+        status: true,
+      },
+    });
+
+    res.status(200).json(usuarios);
+  } catch (error) {
+    console.error('Erro ao buscar usuários clientes:', error);
+    res.status(500).json({ error: 'Erro ao buscar usuários clientes', message: error.message });
+  }
+};
+
 // Buscar usuário por ID (com atributos limitados)
 const buscaId = async (req, res) => {
   const { id } = req.params;
@@ -445,4 +477,5 @@ module.exports = {
   buscaTipoUsuario,
   delecao,
   desfazerDelecao,
+  buscaUsuariosClientes,
 };
